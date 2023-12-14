@@ -1,4 +1,6 @@
-import { Produto as ProdutoType } from '../App'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { adicionarItem, removerItem } from '../store/carrinhoSlice'
 import Produto from '../components/Produto'
 
 import * as S from './styles'
@@ -6,16 +8,25 @@ import * as S from './styles'
 type Props = {
   produtos: ProdutoType[]
   favoritos: ProdutoType[]
-  adicionarAoCarrinho: (produto: ProdutoType) => void
   favoritar: (produto: ProdutoType) => void
 }
 
-const ProdutosComponent = ({
+const ProdutosComponent: React.FC<Props> = ({
   produtos,
   favoritos,
-  adicionarAoCarrinho,
   favoritar
-}: Props) => {
+}) => {
+  const dispatch = useDispatch()
+  const carrinho = useSelector((state: any) => state.carrinho)
+
+  const handleAdicionarAoCarrinho = (produto: ProdutoType) => {
+    dispatch(adicionarItem(produto.id))
+  }
+
+  const handleRemoverDoCarrinho = (produto: ProdutoType) => {
+    dispatch(removerItem(produto.id))
+  }
+
   const produtoEstaNosFavoritos = (produto: ProdutoType) => {
     const produtoId = produto.id
     const IdsDosFavoritos = favoritos.map((f) => f.id)
@@ -32,7 +43,9 @@ const ProdutosComponent = ({
             key={produto.id}
             produto={produto}
             favoritar={favoritar}
-            aoComprar={adicionarAoCarrinho}
+            aoComprar={handleAdicionarAoCarrinho}
+            aoRemoverDoCarrinho={handleRemoverDoCarrinho}
+            carrinho={carrinho}
           />
         ))}
       </S.Produtos>
