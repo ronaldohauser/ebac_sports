@@ -1,56 +1,29 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { adicionarItem, removerItem } from '../store/carrinhoSlice'
-import Produto from '../components/Produto'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useGetProdutosQuery } from '../services/api';
+import Produto from '../components/Produto';
+import { RootReducer } from '../store';
+import * as S from './styles';
 
-import * as S from './styles'
+const ProdutosComponent = () => {
+  const { data: produtos, isLoading } = useGetProdutosQuery();
+  const favoritos = useSelector((state: RootReducer) => state.favorito.itens);
 
-type Props = {
-  produtos: ProdutoType[]
-  favoritos: ProdutoType[]
-  favoritar: (produto: ProdutoType) => void
-}
+  if (isLoading) return <h2>Carregando...</h2>;
 
-const ProdutosComponent: React.FC<Props> = ({
-  produtos,
-  favoritos,
-  favoritar
-}) => {
-  const dispatch = useDispatch()
-  const carrinho = useSelector((state: any) => state.carrinho)
-
-  const handleAdicionarAoCarrinho = (produto: ProdutoType) => {
-    dispatch(adicionarItem(produto.id))
-  }
-
-  const handleRemoverDoCarrinho = (produto: ProdutoType) => {
-    dispatch(removerItem(produto.id))
-  }
-
-  const produtoEstaNosFavoritos = (produto: ProdutoType) => {
-    const produtoId = produto.id
-    const IdsDosFavoritos = favoritos.map((f) => f.id)
-
-    return IdsDosFavoritos.includes(produtoId)
-  }
+  const produtoEstaNosFavoritos = (produtoId: number) => favoritos.some((f) => f.id === produtoId);
 
   return (
-    <>
-      <S.Produtos>
-        {produtos.map((produto) => (
-          <Produto
-            estaNosFavoritos={produtoEstaNosFavoritos(produto)}
-            key={produto.id}
-            produto={produto}
-            favoritar={favoritar}
-            aoComprar={handleAdicionarAoCarrinho}
-            aoRemoverDoCarrinho={handleRemoverDoCarrinho}
-            carrinho={carrinho}
-          />
-        ))}
-      </S.Produtos>
-    </>
-  )
-}
+    <S.Produtos>
+      {produtos?.map((produto) => (
+        <Produto
+          key={produto.id}
+          produto={produto}
+          estaNosFavoritos={produtoEstaNosFavoritos(produto.id)}
+        />
+      ))}
+    </S.Produtos>
+  );
+};
 
-export default ProdutosComponent
+export default ProdutosComponent;

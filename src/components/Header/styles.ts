@@ -1,12 +1,8 @@
-import styled from 'styled-components'
-import { cores } from '../../styles'
+import styled from 'styled-components';
+import { cores } from '../../styles';
 
 export const Header = styled.header`
-  background-image: linear-gradient(
-    45deg,
-    ${cores.corPrincipal},
-    ${cores.corSecundaria}
-  );
+  background-image: linear-gradient(45deg, ${cores.corPrincipal}, ${cores.corSecundaria});
   margin: 80px 0;
   padding: 16px 24px;
   display: flex;
@@ -26,8 +22,7 @@ export const Header = styled.header`
 
     img {
       width: 18px;
-      margin-right: 8px;
-      margin-left: 16px;
+      margin: 0 8px 0 16px;
     }
 
     span {
@@ -42,4 +37,4 @@ export const Header = styled.header`
       margin-top: 16px;
     }
   }
-`
+`;
